@@ -19,7 +19,7 @@ class GradientDecoupleLayer(Function):
 class AffineLayer(nn.Module):
     def __init__(self, num_channels, bias=False):
         super(AffineLayer, self).__init__()
-        weight = torch.FloatTensor(1, num_channels, 1, 1).fill_(1)
+        weight = torch.FloatTensor(1, num_channels, 1, 1).fill_(1)      #[1,1024,1,1]
         self.weight = nn.Parameter(weight, requires_grad=True)
 
         self.bias = None

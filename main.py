@@ -63,7 +63,10 @@ def main(args):
 
 
 if __name__ == "__main__":
+
     args = default_argument_parser().parse_args()
+    # args.add_argument('MODEL.WEIGHTS','./data/pretrain_weights/ImageNetPretrained/MSRA/R-101.pkl')
+    # args.add_argument('OUTPUT_DIR','.checkpoints/voc/defrcn_det_r101_basedefrcn_det_r101_base2')
     launch(
         main,
         args.num_gpus,

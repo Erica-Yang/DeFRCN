@@ -7,6 +7,9 @@ _CC = _C
 _CC.MODEL.BACKBONE.FREEZE = False
 _CC.MODEL.BACKBONE.FREEZE_AT = 3
 
+#---------Dataloader------
+_C.DATALOADER.NUM_WORKERS = 0
+
 # ------------- RPN -------------- #
 _CC.MODEL.RPN.FREEZE = False
 _CC.MODEL.RPN.ENABLE_DECOUPLE = False
@@ -32,4 +35,5 @@ _CC.TEST.PCB_LOWER = 0.05
 
 # ------------ Other ------------- #
 _CC.SOLVER.WEIGHT_DECAY = 5e-5
+_CC.SOLVER.WEIGHT_DECAY_BIAS = 5e-5
 _CC.MUTE_HEADER = True

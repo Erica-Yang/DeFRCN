@@ -1,6 +1,6 @@
 _BASE_: "../Base-RCNN.yaml"
 MODEL:
-  WEIGHTS: "/Path/to/ImageNet/Pretrain/Weight"
+  WEIGHTS: "./data/pretrain_weights/ImageNetPretrained"
   MASK_ON: False
   RESNETS:
     DEPTH: 101
@@ -22,4 +22,4 @@ SOLVER:
   MAX_ITER: 15000
   CHECKPOINT_PERIOD: 200000
   WARMUP_ITERS: 100
-OUTPUT_DIR: "/Path/to/Output/Dir"
+OUTPUT_DIR: "./checkpoints/voc/defrcn_det_r101_base2"

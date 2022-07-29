@@ -33,7 +33,7 @@ def build_roi_heads(cfg, input_shape):
     """
     Build ROIHeads defined by `cfg.MODEL.ROI_HEADS.NAME`.
     """
-    name = cfg.MODEL.ROI_HEADS.NAME
+    name = cfg.MODEL.ROI_HEADS.NAME         #'Res5ROIHeads'
     return ROI_HEADS_REGISTRY.get(name)(cfg, input_shape)
 
 
@@ -191,10 +191,10 @@ class ROIHeads(torch.nn.Module):
             has_gt = len(targets_per_image) > 0
             match_quality_matrix = pairwise_iou(
                 targets_per_image.gt_boxes, proposals_per_image.proposal_boxes
-            )
+            )    #[1,2001]
             matched_idxs, matched_labels = self.proposal_matcher(
                 match_quality_matrix
-            )
+            )   # 2001;  2001
             sampled_idxs, gt_classes = self._sample_proposals(
                 matched_idxs, matched_labels, targets_per_image.gt_classes
             )
@@ -231,7 +231,7 @@ class ROIHeads(torch.nn.Module):
             num_bg_samples.append(
                 (gt_classes == self.num_classes).sum().item()
             )
-            num_fg_samples.append(gt_classes.numel() - num_bg_samples[-1])
+            num_fg_samples.append(gt_classes.numel() - num_bg_samples[-1])   #512-495
             proposals_with_gt.append(proposals_per_image)
 
         # Log the number of fg/bg samples that are selected for training ROI heads
@@ -282,8 +282,8 @@ class Res5ROIHeads(ROIHeads):
         assert len(self.in_features) == 1
 
         # fmt: off
-        pooler_resolution = cfg.MODEL.ROI_BOX_HEAD.POOLER_RESOLUTION
-        pooler_type       = cfg.MODEL.ROI_BOX_HEAD.POOLER_TYPE
+        pooler_resolution = cfg.MODEL.ROI_BOX_HEAD.POOLER_RESOLUTION        #7
+        pooler_type       = cfg.MODEL.ROI_BOX_HEAD.POOLER_TYPE          #'ROIAlignV2'
         pooler_scales     = (1.0 / self.feature_strides[self.in_features[0]], )
         sampling_ratio    = cfg.MODEL.ROI_BOX_HEAD.POOLER_SAMPLING_RATIO
         # fmt: on
@@ -306,19 +306,29 @@ class Res5ROIHeads(ROIHeads):
         # fmt: off
         stage_channel_factor = 2 ** 3  # res5 is 8x res2
         num_groups           = cfg.MODEL.RESNETS.NUM_GROUPS
-        width_per_group      = cfg.MODEL.RESNETS.WIDTH_PER_GROUP
-        bottleneck_channels  = num_groups * width_per_group * stage_channel_factor
-        out_channels         = cfg.MODEL.RESNETS.RES2_OUT_CHANNELS * stage_channel_factor
-        stride_in_1x1        = cfg.MODEL.RESNETS.STRIDE_IN_1X1
+        width_per_group      = cfg.MODEL.RESNETS.WIDTH_PER_GROUP        #64
+        bottleneck_channels  = num_groups * width_per_group * stage_channel_factor      #512
+        out_channels         = cfg.MODEL.RESNETS.RES2_OUT_CHANNELS * stage_channel_factor       #2048
+        stride_in_1x1        = cfg.MODEL.RESNETS.STRIDE_IN_1X1     #True
         norm                 = cfg.MODEL.RESNETS.NORM
         assert not cfg.MODEL.RESNETS.DEFORM_ON_PER_STAGE[-1], \
             "Deformable conv is not yet supported in res5 head."
         # fmt: on
 
+        # blocks = make_stage(
+        #     BottleneckBlock,
+        #     3,
+        #     first_stride=2,
+        #     in_channels=out_channels // 2,
+        #     bottleneck_channels=bottleneck_channels,
+        #     out_channels=out_channels,
+        #     num_groups=num_groups,
+        #     norm=norm,
+        #     stride_in_1x1=stride_in_1x1,
+        # )
         blocks = make_stage(
             BottleneckBlock,
             3,
-            first_stride=2,
             in_channels=out_channels // 2,
             bottleneck_channels=bottleneck_channels,
             out_channels=out_channels,

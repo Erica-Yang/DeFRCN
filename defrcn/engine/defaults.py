@@ -38,7 +38,7 @@ def default_argument_parser():
         argparse.ArgumentParser:
     """
     parser = argparse.ArgumentParser(description="DeFRCN Training")
-    parser.add_argument("--config-file", default="", metavar="FILE",
+    parser.add_argument("--config-file", default="./configs/voc/defrcn_det_r101_base2.yaml", metavar="FILE",
                         help="path to config file")
     parser.add_argument("--resume", action="store_true",
                         help="whether to attempt to resume")
@@ -63,9 +63,10 @@ def default_argument_parser():
     # PyTorch still may leave orphan processes in multi-gpu training.
     # Therefore we use a deterministic way to obtain port,
     # so that users are aware of orphan processes by seeing the port occupied.
-    port = 2 ** 15 + 2 ** 14 + hash(os.getuid()) % 2 ** 14
+    # port = 2 ** 15 + 2 ** 14 + hash(os.getuid()) % 2 ** 14
+    port = 80
     parser.add_argument("--dist-url", default="tcp://127.0.0.1:{}".format(port))
-    parser.add_argument("--opts", default=None, nargs=argparse.REMAINDER,
+    parser.add_argument("--opts", default=['MODEL.WEIGHTS','./data/pretrain_weights/ImageNetPretrained/MSRA/R-101.pkl'], nargs=argparse.REMAINDER,
                         help="Modify config options using the command-line")
     
     return parser
@@ -489,7 +490,7 @@ class DefaultTrainer(SimpleTrainer):
                 try:
                     evaluator = cls.build_evaluator(cfg, dataset_name)
                 except NotImplementedError:
-                    logger.warn(
+                    logger.warning(
                         "No evaluator found. Use `DefaultTrainer.test(evaluators=)`, "
                         "or implement its `build_evaluator` method."
                     )

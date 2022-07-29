@@ -190,7 +190,7 @@ class FastRCNNOutputs(object):
         """
         Log the accuracy metrics to EventStorage.
         """
-        num_instances = self.gt_classes.numel()
+        num_instances = self.gt_classes.numel() #1024
         pred_classes = self.pred_class_logits.argmax(dim=1)
         bg_class_ind = self.pred_class_logits.shape[1] - 1
 
@@ -382,8 +382,8 @@ class FastRCNNOutputLayers(nn.Module):
         # The prediction layer for num_classes foreground classes and one
         # background class
         # (hence + 1)
-        self.cls_score = nn.Linear(input_size, num_classes + 1)
-        num_bbox_reg_classes = 1 if cls_agnostic_bbox_reg else num_classes
+        self.cls_score = nn.Linear(input_size, num_classes + 1)     #2048->16
+        num_bbox_reg_classes = 1 if cls_agnostic_bbox_reg else num_classes      #15
         self.bbox_pred = nn.Linear(input_size, num_bbox_reg_classes * box_dim)
 
         nn.init.normal_(self.cls_score.weight, std=0.01)

@@ -70,7 +70,7 @@ class GeneralizedRCNN(nn.Module):
     def _forward_once_(self, batched_inputs, gt_instances=None):
 
         images = self.preprocess_image(batched_inputs)
-        features = self.backbone(images.tensor)
+        features = self.backbone(images.tensor)     #res4: [2,1024,44,59]  //batch_size,dim,..,..
 
         features_de_rpn = features
         if self.cfg.MODEL.RPN.ENABLE_DECOUPLE:
@@ -80,7 +80,7 @@ class GeneralizedRCNN(nn.Module):
 
         features_de_rcnn = features
         if self.cfg.MODEL.ROI_HEADS.ENABLE_DECOUPLE:
-            scale = self.cfg.MODEL.ROI_HEADS.BACKWARD_SCALE
+            scale = self.cfg.MODEL.ROI_HEADS.BACKWARD_SCALE #0.75
             features_de_rcnn = {k: self.affine_rcnn(decouple_layer(features[k], scale)) for k in features}
         results, detector_losses = self.roi_heads(images, features_de_rcnn, proposals, gt_instances)
 

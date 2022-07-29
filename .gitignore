@@ -31,8 +31,8 @@ wheels/
 exp/
 checkpoints/
 _DEL_/
-datasets/coco
-datasets/cocosplit
-datasets/VOC2007
-datasets/VOC2012
-datasets/vocsplit
+__datasets/coco
+__datasets/cocosplit
+__datasets/VOC2007
+__datasets/VOC2012
+__datasets/vocsplit

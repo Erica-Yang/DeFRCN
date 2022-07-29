@@ -10,7 +10,7 @@ SPLIT_ID=$2
 # ------------------------------- Base Pre-train ---------------------------------- #
 python3 main.py --num-gpus 8 --config-file configs/voc/defrcn_det_r101_base${SPLIT_ID}.yaml     \
     --opts MODEL.WEIGHTS ${IMAGENET_PRETRAIN}                                                   \
-           OUTPUT_DIR ${SAVE_DIR}/defrcn_det_r101_base${SPLIT_ID}
+           OUTPUT_DIR ${SAVE_DIR}/defrcn_det_r101_basedefrcn_det_r101_base${SPLIT_ID}
 
 
 # ------------------------------ Model Preparation -------------------------------- #
